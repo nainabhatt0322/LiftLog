@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111">
+<title>LiftLog</title>
+<style>
+:root{--bg:#f5f3ef;--card:#fff;--ink:#151515;--muted:#77736d;--line:#e6e2da;--dark:#111;--lime:#d9ff63;--green:#16824f;--red:#b42318;--soft:#efede7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button{font:inherit;cursor:pointer}.app{width:min(860px,100%);margin:auto;padding:18px 14px 80px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.brand{display:flex;align-items:center;gap:10px}.logo{width:38px;height:38px;border-radius:12px;background:#111;color:#fff;display:grid;place-items:center;font-weight:900}.brand h1{margin:0;font-size:20px}.brand p{margin:2px 0 0;color:var(--muted);font-size:11px}
+.topActions{display:flex;gap:7px}.icon{height:40px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 12px;font-size:11px;font-weight:750}.icon.danger{color:var(--red)}
+.hero{background:#111;color:#fff;border-radius:24px;padding:20px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:130px;height:130px;border-radius:50%;background:var(--lime);right:-55px;top:-60px}.hero h2,.hero p,.heroBottom{position:relative;z-index:1}.hero h2{margin:0;font-size:25px;letter-spacing:-1px}.hero p{margin:5px 0 0;color:#aaa;font-size:12px}.heroBottom{display:flex;justify-content:space-between;align-items:flex-end;margin-top:18px}.stat b{font-size:22px}.stat small{display:block;color:#aaa;font-size:10px}.ring{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--lime) var(--progress),#333 0);position:relative}.ring:before{content:"";position:absolute;inset:6px;background:#111;border-radius:50%}.ring span{position:relative;font-size:12px;font-weight:800}
+.days{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:13px 0 18px}.day{border:1px solid var(--line);background:#fff;border-radius:13px;padding:9px 3px;text-align:center;color:var(--muted);font-size:10px}.day b{display:block;color:var(--ink);font-size:13px}.day.active{background:#111;border-color:#111;color:#aaa}.day.active b{color:#fff}.day.done{box-shadow:inset 0 -3px 0 var(--lime)}
+.day.skipped{box-shadow:inset 0 -3px 0 #d7a09a}
+.datePicker{display:flex;align-items:end;justify-content:space-between;gap:10px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:10px 12px;margin:0 0 14px}
+.datePicker label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:4px}
+.datePicker input{border:0;background:transparent;color:var(--ink);font-weight:750;font-size:13px;outline:0}
+.section{display:flex;justify-content:space-between;align-items:center;margin:0 2px 9px}.section h3{font-size:14px;margin:0}.section span{font-size:10px;color:var(--muted)}
+.exercise{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:9px}.exercise.done{border-color:#cce8d7;background:#fbfffc}.head{display:flex;align-items:center;gap:10px}.num{width:31px;height:31px;border-radius:10px;background:#efede7;display:grid;place-items:center;font-size:11px;font-weight:850;flex:none}.done .num{background:#dcf2e5;color:var(--green)}.info{flex:1}.name{font-size:14px;font-weight:800}.rx{font-size:11px;color:var(--muted);margin-top:3px}.tick{width:31px;height:31px;border-radius:10px;border:1px solid var(--line);background:#fff;color:transparent;font-weight:900}.done .tick{background:#111;color:#fff}
+.actions{display:flex;gap:7px;margin:12px 0 0 41px}.btn{border:1px solid var(--line);background:#fff;color:#111;border-radius:10px;padding:8px 11px;font-size:10px;font-weight:750}.btn.black{background:#111;color:#fff;border-color:#111}.btn.red{color:var(--red)}
+.timer{display:none;margin:8px 0 0 41px;background:#111;color:#fff;border-radius:11px;padding:10px 12px;align-items:center;justify-content:space-between}.timer.show{display:flex}.timer b{font-size:21px;font-variant-numeric:tabular-nums}.timer button{border:0;background:#2d2d2d;color:#fff;border-radius:8px;padding:6px 8px;font-size:10px}.tip{font-size:10px;color:var(--muted);margin:8px 0 0 41px}
+.notice{background:#fff7e6;border:1px solid #f0dfb7;color:#735313;border-radius:13px;padding:10px 12px;font-size:11px;margin-bottom:10px}
+.history{margin-top:18px}.historyHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.historyHead h3{font-size:14px;margin:0}.historyList{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}.hist{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;font-size:11px}.hist:last-child{border-bottom:0}.hist b{font-size:12px}.hist span{color:var(--muted);text-align:right}.deleteHist{margin-top:5px;border:0;background:transparent;color:var(--red);font-size:10px;font-weight:750;padding:0;text-decoration:underline}.empty{padding:22px;text-align:center;color:var(--muted);font-size:11px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:10}.modal.show{display:flex}.sheet{width:min(620px,100%);max-height:82vh;overflow:auto;background:#fff;border-radius:22px 22px 0 0;padding:18px}.close{float:right;border:0;background:var(--soft);border-radius:9px;padding:7px}
+@media(min-width:700px){.modal{align-items:center}.sheet{border-radius:22px}}@media(max-width:430px){.actions,.timer,.tip{margin-left:0}.topActions{gap:5px}.icon{padding:0 9px}}
+
+.installBar{display:none;background:#fff;border:1px solid var(--line);border-radius:15px;padding:10px 12px;margin:12px 0;align-items:center;justify-content:space-between;gap:10px;box-shadow:var(--shadow)}
+.installBar.show{display:flex}.installBar div{font-size:11px}.installBar b{display:block;font-size:12px;margin-bottom:2px}.installBtn{border:0;background:#111;color:#fff;border-radius:9px;padding:8px 11px;font-size:10px;font-weight:800;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+ <div class="brand"><div class="logo">L</div><div><h1>LiftLog</h1><p>Train • Track • Recover</p></div></div>
+ <div class="topActions"><button class="icon" onclick="openHistory()">History</button><button class="icon danger" onclick="resetData()">Reset Completed</button></div>
+</header>
+
+<div class="installBar" id="installBar">
+<div><b>Install LiftLog</b><span>Keep your workouts on your phone like an app.</span></div>
+<button class="installBtn" id="installBtn">Install</button>
+</div>
+<section class="hero">
+ <h2 id="title"></h2><p id="subtitle"></p><p id="selectedDateLabel" style="margin-top:8px;color:#d0d0d0;font-size:11px"></p>
+ <div class="heroBottom"><div class="stat"><b id="done">0</b><small>of today's exercises</small></div><div class="ring" id="ring"><span id="pct">0%</span></div></div>
+</section>
+
+<nav class="days" id="days"></nav>
+<div class="datePicker">
+  <div>
+    <label for="workoutDate">Workout date</label>
+    <input id="workoutDate" type="date" onchange="changeDate(this.value)">
+  </div>
+  <button class="btn" onclick="goToday()">Today</button>
+</div>
+<div id="notice"></div>
+<div class="section"><h3>Today's workout</h3><span>≤ 90 MIN</span></div>
+<main id="workout"></main>
+
+<div class="actions" style="margin:12px 0 0"><button class="btn red" onclick="skipDay()">Skip this date</button><button class="btn" onclick="unskipDay()">Unskip date</button></div>
+
+<section class="history">
+ <div class="historyHead"><h3>Recent history</h3><button class="btn" onclick="openHistory()">View all</button></div>
+ <div class="historyList" id="recent"></div>
+</section>
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeHistory()"><div class="sheet"><button class="close" onclick="closeHistory()">✕</button><h3>Workout history</h3><div id="history"></div></div></div>
+
+<script>
+const PLAN={
+1:{title:"Lower A",sub:"Squat • Glutes • Quads",ex:[["Barbell Back Squat",3,"6–8","2–3 min"],["Hip Thrust",3,"8–10","90–120 sec"],["Romanian Deadlift",2,"8–10","2 min"],["Leg Press",2,"10–12","90 sec"],["Leg Extension",2,"12–15","60–75 sec"],["Cable Crunch",2,"12–15","60 sec"]]},
+2:{title:"Upper A",sub:"Bench • Back • Pull-up",ex:[["Dead Hang",3,"20–30 sec","60–90 sec"],["Scapular Pull-up",3,"5–8","60–90 sec"],["Negative Pull-up",2,"2–3","90 sec"],["Barbell Bench Press",3,"6–8","2 min"],["Lat Pulldown",3,"8–12","90 sec"],["Seated Cable Row",3,"8–12","90 sec"],["Dumbbell Shoulder Press",2,"8–10","90 sec"],["Lateral Raise",3,"12–15","60 sec"],["Dumbbell Curl",2,"10–12","60 sec"],["Triceps Pushdown",2,"10–12","60 sec"]]},
+3:{title:"Lower B",sub:"Deadlift • Glutes • Legs",ex:[["Conventional Deadlift",3,"5","2.5–3 min"],["Hip Thrust",3,"8–10","90–120 sec"],["Romanian Deadlift",2,"8–10","2 min"],["Leg Press",3,"10–12","90 sec"],["Leg Extension",2,"12–15","60–75 sec"],["Dead Bug",2,"8–10/side","60 sec"]]},
+4:{title:"Upper B",sub:"Back • Chest • Shoulders • Arms",ex:[["Dead Hang",2,"20–30 sec","60–90 sec"],["Scapular Pull-up",2,"6–8","60–90 sec"],["Negative Pull-up",3,"2","90 sec"],["Incline Dumbbell Press",3,"8–10","90–120 sec"],["Lat Pulldown",3,"10–12","90 sec"],["Seated Cable Row",2,"10–12","90 sec"],["Pec Deck",2,"12","60–75 sec"],["Lateral Raise",3,"12–15","60 sec"],["Reverse Pec Deck",2,"12–15","60 sec"],["Dumbbell Curl",2,"10–12","60 sec"],["Triceps Pushdown",2,"10–12","60 sec"]]},
+5:{title:"Full Body",sub:"Light • Conditioning • Flexibility",ex:[["Goblet Squat",3,"10","90 sec"],["Hip Thrust",2,"10–12","90 sec"],["Dumbbell RDL",2,"10","90 sec"],["Lat Pulldown",2,"10–12","90 sec"],["Dumbbell Bench Press",2,"10","90 sec"],["Lateral Raise",2,"15","60 sec"],["Cable Crunch",2,"12–15","60 sec"]]}
+};
+
+let state=JSON.parse(localStorage.getItem("liftlogFinal")||'{"day":1,"selectedDate":"","completed":{},"skipped":{}}'),timer=null;
+const today=()=>new Date().toISOString().slice(0,10);
+if(!state.selectedDate) state.selectedDate=today();
+const selectedDate=()=>state.selectedDate;
+const key=(d,i,date=selectedDate())=>date+"|day"+d+"|ex"+i;
+const dayKey=(d,date=selectedDate())=>date+"|day"+d;
+function save(){localStorage.setItem("liftlogFinal",JSON.stringify(state))}
+function isDone(d,i,date=selectedDate()){return !!state.completed[key(d,i,date)]}
+function isSkipped(d,date=selectedDate()){return !!state.skipped[dayKey(d,date)]}
+function completion(d,date=selectedDate()){if(isSkipped(d,date))return 0;let p=PLAN[d];return Math.round(p.ex.filter((_,i)=>isDone(d,i,date)).length/p.ex.length*100)}
+function changeDate(value){if(!value)return;state.selectedDate=value;save();render()}
+function goToday(){state.selectedDate=today();save();render()}
+function render(){
+ let p=PLAN[state.day],pc=completion(state.day);
+ document.getElementById("workoutDate").value=selectedDate();
+ document.getElementById("workoutDate").max=today();title.textContent=p.title;subtitle.textContent=p.sub;document.getElementById("selectedDateLabel").textContent=new Date(selectedDate()+"T00:00:00").toLocaleDateString(undefined,{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+ done.textContent=p.ex.filter((_,i)=>isDone(state.day,i)).length;document.getElementById("pct").textContent=pc+"%";ring.style.setProperty("--progress",pc+"%");
+ days.innerHTML=Object.keys(PLAN).map(d=>{let sk=isSkipped(+d),dn=!sk&&completion(+d)===100;return `<button class="day ${+d===state.day?"active":""} ${dn?"done":""} ${sk?"skipped":""}" onclick="state.day=${d};save();render()"><b>DAY ${d}</b>${sk?"Skipped":PLAN[d].title}</button>`}).join("");
+ notice.innerHTML=isSkipped(state.day)?'<div class="notice">This day is marked as <b>skipped</b>. Your history keeps the date so you can see the gap.</div>':"";
+ workout.innerHTML=p.ex.map((e,i)=>card(state.day,i,e)).join("");
+ renderRecent();
+}
+function card(d,i,e){let dn=isDone(d,i),sk=isSkipped(d);return `<article class="exercise ${dn?"done":""}"><div class="head"><div class="num">${i+1}</div><div class="info"><div class="name">${e[0]}</div></div><button class="tick" ${sk?"disabled":""} onclick="toggle(${d},${i})">${dn?"✓":""}</button></div><div class="actions"><button class="btn black" ${sk?"disabled":""} onclick="start(${d},${i})">Timer</button></div><div class="timer" id="timer-${i}"><b id="time-${i}">00:00</b><div><button onclick="pause()">Pause</button> <button onclick="stop()">Stop</button></div></div></article>`}
+function toggle(d,i){if(isSkipped(d))return;let k=key(d,i);if(isDone(d,i))delete state.completed[k];else state.completed[k]=true;save();render()}
+function skipDay(){
+  state.skipped[dayKey(state.day)]=true;
+  PLAN[state.day].ex.forEach((_,i)=>delete state.completed[key(state.day,i)]);
+  save();render();
+}
+function unskipDay(){delete state.skipped[dayKey(state.day)];save();render()}
+function parseSec(s){let m=s.match(/(\d+)\s*min/);if(m)return +m[1]*60;let x=s.match(/(\d+)\s*sec/);return x?+x[1]:60}
+function start(d,i){stop();let sec=parseSec(PLAN[d].ex[i][3]),el=document.getElementById("timer-"+i),tm=document.getElementById("time-"+i);el.classList.add("show");timer={sec,paused:false,id:null};const tick=()=>{tm.textContent=fmt(timer.sec);if(!timer.paused&&timer.sec>0)timer.sec--;if(timer.sec<=0){clearInterval(timer.id);navigator.vibrate?.(200);alert("Rest complete — next set!");}};tick();timer.id=setInterval(tick,1000)}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function pause(){if(timer)timer.paused=!timer.paused}
+function stop(){if(timer?.id)clearInterval(timer.id);document.querySelectorAll(".timer").forEach(x=>x.classList.remove("show"));timer=null}
+function allHistory(){
+ let out=[];
+ for(let [k,v] of Object.entries(state.completed)){if(!v)continue;let [date,d,i]=k.split("|");out.push({date,d,i,type:"Completed"})}
+ for(let k of Object.keys(state.skipped)){let [date,d]=k.split("|");out.push({date,d,i:"",type:"Skipped"})}
+ return out.sort((a,b)=>b.date.localeCompare(a.date)||a.d.localeCompare(b.d));
+}
+function renderRecent(){let rows=allHistory().slice(0,8);document.getElementById("recent").innerHTML=rows.length?rows.map(r=>{let ex=r.type==="Skipped"?"Day "+r.d.replace("day","")+" — skipped":PLAN[r.d.replace("day","")]?.ex?.[r.i.replace("ex","")]?.[0]||"Workout";return `<div class="hist"><b>${r.date}<br>${ex}</b><span>${r.type}<br><button class="deleteHist" onclick="deleteDateHistory('${r.date}')">Delete date</button></span></div>`}).join(""):'<div class="empty">No workout history yet.</div>'}
+function deleteDateHistory(date){
+  if(!confirm("Delete all workout history for "+date+"? This will remove completed exercises and skipped-day records for that date only.")) return;
+  Object.keys(state.completed).forEach(k=>{if(k.startsWith(date+"|"))delete state.completed[k]});
+  Object.keys(state.skipped).forEach(k=>{if(k.startsWith(date+"|"))delete state.skipped[k]});
+  save();
+  render();
+  openHistory();
+}
+function openHistory(){let rows=allHistory();document.getElementById("history").innerHTML=rows.length?rows.map(r=>{let d=r.d.replace("day",""),i=r.i.replace("ex","");let ex=r.type==="Skipped"?"Day "+d+" — skipped":PLAN[d]?.ex?.[i]?.[0]||"Workout";return `<div class="hist"><b>${r.date}<br>${ex}</b><span>${r.type}<br><button class="deleteHist" onclick="deleteDateHistory('${r.date}')">Delete date</button></span></div>`}).join(""):'<div class="empty">No workout history yet.</div>';modal.classList.add("show")}
+function closeHistory(){modal.classList.remove("show")}
+function resetData(){
+  if(confirm("Reset the completed exercises for TODAY only? Your workout history and skipped days will stay safe.")){
+    const prefix=today()+"|day"+state.day+"|";
+    Object.keys(state.completed).forEach(k=>{if(k.startsWith(prefix))delete state.completed[k]});
+    save();
+    render();
+  }
+}
+save();
+render();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{}));
+}
+let deferredInstallPrompt = null;
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  document.getElementById("installBar")?.classList.add("show");
+});
+document.getElementById("installBtn")?.addEventListener("click", async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  document.getElementById("installBar")?.classList.remove("show");
+});
+window.addEventListener("appinstalled", () => {
+  document.getElementById("installBar")?.classList.remove("show");
+});
+</script>
+</body>
+</html>
